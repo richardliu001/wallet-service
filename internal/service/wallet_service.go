@@ -212,3 +212,8 @@ func (s *WalletService) GetHistory(ctx context.Context, walletID uint64, limit i
 		Order("created_at asc").Limit(limit).Find(&txs).Error
 	return txs, err
 }
+
+// Repo returns the underlying repository – mainly for unit tests.
+func (s *WalletService) Repo() repo.RepositoryInterface {
+	return s.repo
+}
