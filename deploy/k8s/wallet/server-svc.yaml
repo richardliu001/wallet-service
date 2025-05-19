@@ -1,0 +1,7 @@
+# deploy/k8s/wallet/server-svc.yaml
+apiVersion: v1
+kind: Service
+metadata: { name: wallet-server, namespace: wallet }
+spec:
+  selector: { app: wallet-server }
+  ports: [{ port: 80, targetPort: 8080 }]

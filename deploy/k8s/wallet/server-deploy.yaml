@@ -1,0 +1,18 @@
+# deploy/k8s/wallet/server-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: wallet-server, namespace: wallet }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: wallet-server } }
+  template:
+    metadata: { labels: { app: wallet-server } }
+    spec:
+      containers:
+        - name: wallet-server
+          image: registry.local:5000/wallet-server:latest
+          imagePullPolicy: Always
+          envFrom:
+            - { configMapRef: { name: wallet-config } }
+            - { secretRef: { name: wallet-db-secret } }
+          ports: [{ containerPort: 8080 }]

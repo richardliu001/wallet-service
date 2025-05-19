@@ -1,0 +1,7 @@
+# deploy/k8s/kafka/kafka-svc.yaml
+apiVersion: v1
+kind: Service
+metadata: { name: kafka, namespace: wallet }
+spec:
+  selector: { app: kafka }
+  ports: [{ port: 9092, targetPort: 9092 }]

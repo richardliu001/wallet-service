@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wallet-init-sql
+  namespace: wallet
+data:
+  init.sql: |
+    -- schema.sql: init Wallet Service database
+    CREATE TABLE wallet (
+        id BIGSERIAL PRIMARY KEY,
+        balance NUMERIC(20,8) NOT NULL CHECK (balance >= 0),
+        version BIGINT NOT NULL DEFAULT 0,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+
+    CREATE TABLE transaction (
+        id BIGSERIAL PRIMARY KEY,
+        wallet_id BIGINT NOT NULL REFERENCES wallet(id),
+        type VARCHAR(32) NOT NULL,
+        amount NUMERIC(20,8) NOT NULL CHECK (amount > 0),
+        balance_before NUMERIC(20,8) NOT NULL,
+        balance_after NUMERIC(20,8) NOT NULL,
+        related_wallet_id BIGINT NULL REFERENCES wallet(id),
+        idempotency_key VARCHAR(64) NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+
+    CREATE TABLE event_outbox (
+        id BIGSERIAL PRIMARY KEY,
+        aggregate VARCHAR(64) NOT NULL,
+        aggregate_id BIGINT NOT NULL,
+        event_type VARCHAR(64) NOT NULL,
+        payload JSONB NOT NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+        processed BOOLEAN NOT NULL DEFAULT FALSE,
+        processed_at TIMESTAMPTZ NULL
+    );
+
+    -- 为未处理事件建立索引以提升轮询效率
+    CREATE INDEX idx_event_outbox_unprocessed 
+        ON event_outbox(processed) 
+        WHERE processed = FALSE;

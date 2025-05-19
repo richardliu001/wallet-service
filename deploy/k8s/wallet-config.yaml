@@ -1,0 +1,23 @@
+# deploy/k8s/wallet-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wallet-config
+  namespace: wallet
+data:
+  config.yaml: |
+    server:
+      port: 8080
+    postgres:
+      dsn: "host=postgres dbname=walletdb user=wallet sslmode=disable"
+    redis:
+      addr: "redis:6379"
+      password: ""
+      db: 0
+    kafka:
+      brokers:
+        - "kafka:9092"
+      topic: "wallet.events"
+    ratelimit:
+      rps: 100
+      burst: 200

@@ -1,0 +1,31 @@
+# deploy/k8s/postgres/postgres-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: wallet
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: postgres } }
+  template:
+    metadata: { labels: { app: postgres } }
+    spec:
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim: { claimName: postgres-pvc }
+        - name: init-sql
+          configMap: { name: wallet-init-sql }
+      containers:
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              valueFrom: { secretKeyRef: { name: wallet-db-secret, key: POSTGRES_USER } }
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: wallet-db-secret, key: POSTGRES_PASSWORD } }
+            - name: POSTGRES_DB
+              valueFrom: { secretKeyRef: { name: wallet-db-secret, key: POSTGRES_DB } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts:
+            - { name: pgdata, mountPath: /var/lib/postgresql/data }
+            - { name: init-sql, mountPath: /docker-entrypoint-initdb.d }

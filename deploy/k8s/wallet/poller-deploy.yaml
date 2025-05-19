@@ -1,0 +1,17 @@
+# deploy/k8s/wallet/poller-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: wallet-poller, namespace: wallet }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: wallet-poller } }
+  template:
+    metadata: { labels: { app: wallet-poller } }
+    spec:
+      containers:
+        - name: wallet-poller
+          image: registry.local:5000/wallet-poller:latest
+          imagePullPolicy: Always
+          envFrom:
+            - { configMapRef: { name: wallet-config } }
+            - { secretRef: { name: wallet-db-secret } }
