@@ -21,18 +21,7 @@ Instead of hacking everything in one main.go, the code here shows one possible w
 
 🧱 Repo layout
 
-wallet-service/
-├─ cmd/
-│  ├─ server/         # gin HTTP API
-│  └─ poller/         # pulls Outbox & pushes to Kafka
-├─ internal/          # all business code lives here
-│  ├─ config/ logger/
-│  ├─ model/ repo/ service/
-│  └─ transport/http/
-├─ deploy/
-│  ├─ k8s/            # every yaml split by component
-│  └─ deploy.sh       # one-click Minikube launcher
-└─ schema.sql
+![img.png](image/img_layout.png)
 
 
 ⸻
