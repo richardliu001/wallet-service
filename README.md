@@ -44,7 +44,9 @@ cd wallet-service
 
 # 1. spin up minimal stack (Postgres + Redis)
 make run-local          # == docker compose -f hack/compose.yml up -d
+
 export POSTGRES_PASSWORD=walletpass # env that config loader uses
+
 go run ./cmd/server     # Gin listening on :8080
 
 # 2. smoke test
@@ -83,13 +85,6 @@ minikube delete && docker rm -f registry-local
 
 ⸻
 
-🛣️ Important YAMLs explained (super short)
-
-path	why it exists
-wallet-init-sql-configmap.yaml	embeds schema.sql; Postgres container auto-executes
-postgres-pvc.yaml / redis-pvc.yaml	keep data if Pod dies
-server-deploy.yaml	envFrom ConfigMap + Secret  image = registry.local:5000/...
-ingress.yaml	expose as http://wallet.local via Nginx addon
 
 All manifests are vanilla; switch to Helm/Helmfile later if you prefer.
 
@@ -119,7 +114,7 @@ TLS / Auth?	left out intentionally for brevity
 
 
 
-Test case
+FYI: Test case
 Deployment using minikube + ingress
 
 ![img_1.png](image/img_1.png)
