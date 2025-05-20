@@ -1,17 +1,36 @@
-# deploy/k8s/wallet/poller-deploy.yaml
 apiVersion: apps/v1
 kind: Deployment
-metadata: { name: wallet-poller, namespace: wallet }
+metadata:
+  name: wallet-poller
+  namespace: wallet
 spec:
   replicas: 1
-  selector: { matchLabels: { app: wallet-poller } }
+  selector:
+    matchLabels:
+      app: wallet-poller
   template:
-    metadata: { labels: { app: wallet-poller } }
+    metadata:
+      labels:
+        app: wallet-poller
     spec:
       containers:
         - name: wallet-poller
           image: host.docker.internal:5000/wallet-poller:latest
           imagePullPolicy: Always
           envFrom:
-            - { configMapRef: { name: wallet-config } }
-            - { secretRef: { name: wallet-db-secret } }
+            - configMapRef:
+                name: wallet-config
+            - secretRef:
+                name: wallet-db-secret
+          # 同样挂载配置文件
+          volumeMounts:
+            - name: wallet-config-file
+              mountPath: /app/internal/config/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: wallet-config-file
+          configMap:
+            name: wallet-config
+            items:
+              - key: config.yaml
+                path: config.yaml
