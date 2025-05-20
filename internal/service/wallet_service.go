@@ -34,11 +34,12 @@ func (s *WalletService) Deposit(ctx context.Context, id uint64, amt decimal.Deci
 	}
 	var finalBal decimal.Decimal
 	err := s.repo.DB(ctx).Transaction(func(tx *gorm.DB) error {
-		existed, _, err := s.repo.TxExists(ctx, tx, id, key, "DEPOSIT")
+		existed, txRow, err := s.repo.TxExists(ctx, tx, id, key, "DEPOSIT")
 		if err != nil {
 			return err
 		}
 		if existed {
+			finalBal = txRow.BalanceAfter
 			return nil
 		}
 
