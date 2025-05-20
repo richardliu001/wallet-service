@@ -39,7 +39,7 @@ wallet-service/
 
 📐 Architecture 
 
-![img.png](img.png)
+![img.png](image/img.png)
 
 	•	Single DB transaction updates balance and inserts an Outbox row
 	•	wallet-poller keeps shooting unprocessed rows to Kafka; when ACKed it flips processed=true
@@ -127,3 +127,40 @@ Why not migrations tool?	for a take-home, embedding sql in ConfigMap is OK; prod
 What about exactly-once events?	need PG logical replication + Kafka Tx or Debezium; out of scope here
 Why single Kafka broker?	easier on laptops; scale to 3 in values-prod.yaml
 TLS / Auth?	left out intentionally for brevity
+
+
+
+Test case
+Deployment using minikube + ingress
+
+![img_1.png](image/img_1.png)
+
+
+Deposit for a given wallet using the idempotency key
+
+![img_2.png](image/img_2.png)
+
+
+Deposit for a given wallet using the duplicate  idempotency key
+The result should not change
+![img_3.png](image/img_3.png)
+Deposit using a different key
+![img_4.png](image/img_4.png)
+Check balance
+![img_5.png](image/img_5.png)
+
+Withdraw
+![img_6.png](image/img_6.png)
+
+
+
+
+transfer for a given wallet to another wallet
+
+![img_7.png](image/img_7.png)
+
+
+Check for the transaction history of a wallet
+![img_8.png](image/img_8.png)
+
+
