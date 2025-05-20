@@ -52,7 +52,6 @@ kubectl apply -f deploy/k8s/kafka/
 kubectl apply -f deploy/k8s/wallet/
 kubectl apply -f deploy/k8s/ingress.yaml
 
-# 3. 等待所有 Deployment 就绪
 for D in redis postgres zookeeper kafka wallet-server wallet-poller; do
   kubectl -n ${NS} rollout status deploy/${D} --timeout=180s
 done

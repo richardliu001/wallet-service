@@ -22,7 +22,6 @@ spec:
                 name: wallet-config
             - secretRef:
                 name: wallet-db-secret
-          # 同样挂载配置文件
           volumeMounts:
             - name: wallet-config-file
               mountPath: /app/internal/config/config.yaml
