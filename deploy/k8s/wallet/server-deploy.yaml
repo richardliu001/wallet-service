@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: wallet-server
-          image: registry.local:5000/wallet-server:latest
+          image: host.docker.internal:5000/wallet-server:latest
           imagePullPolicy: Always
           envFrom:
             - { configMapRef: { name: wallet-config } }

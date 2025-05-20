@@ -1,6 +1,6 @@
 module github.com/richardliu001/wallet-service
 
-go 1.19
+go 1.23.0
 
 require (
 	github.com/gin-gonic/gin v1.9.0
